@@ -1,0 +1,3 @@
+name = Pawling PneumaSeal Data
+description = Provides a system for modifying, organizing, and viewing data for PneumaSeal profiles.
+core = 7.x

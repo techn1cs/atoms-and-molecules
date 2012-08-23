@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/i/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>cumulostratus // slapjack</title>
+  <meta name="description" content="">
+
+  <!-- Mobile viewport optimized: h5bp.com/viewport -->
+  <meta name="viewport" content="width=device-width">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <link rel="stylesheet" href="../../css/bootstrap.css">
+  <link rel="stylesheet" href="../../css/html5.css">
+	<link rel="stylesheet/less" type="text/css" href="../../css/purdy.less">
+  <link rel="stylesheet/less" type="text/css" href="slapjack.purdy.less">
+	
+	<!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+  <!-- All JavaScript at the bottom, except this Modernizr build.
+       Modernizr enables HTML5 elements & feature detects for optimal performance.
+       Create your own custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="../../js/libs/modernizr.js"></script>	
+	<script src="../../js/libs/less.min.js"></script>
+</head>
+<body>
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+<div class="container">
+	
+	<header class="row">
+		<div class="span8 offset2">
+			<h2>SlapJack!</h2>
+		</div>
+	</header>
+	
+	<div id="main" role="main" class="row">
+		<div id="deck" class="span12">
+			<div class="row">
+			<div class="card span4 offset4">
+				<h4 class="digit"></h4>
+				<h1 class="symbol"></h1>
+				<h4 class="suit"></h4>
+			</div>
+			</div>
+			<div class="row" style="margin-top: 10px;">
+			<div class="span4 offset4 center">
+				<button class="btn btn-info btn-small" onclick="displayCard();">Next Card</button>
+				<button class="btn btn-primary btn-small" id="player0-lay" onclick="lay(0);">Player 0</button> 
+				<button class="btn btn-primary btn-small" id="player1-lay" onclick="lay(1);">Player 1</button> 
+				<button class="btn btn-primary btn-small" id="player2-lay" onclick="lay(2);">Player 2</button> 
+				<button class="btn btn-primary btn-small" id="player3-lay" onclick="lay(3);">Player 3</button> 
+			</div>
+			<div>
+		</div>
+		
+			
+		<div id="output" class="span4 offset4">
+			<div id="player1"></div>
+			<div id="player2"></div>
+			<div id="player3"></div>
+			<div id="player4"></div>
+		</div>
+	</div>
+
+	<footer class="row">
+		<div class="span8 offset2">
+			---
+		</div>
+	</footer>
+
+</div>
+
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
+  <script>window.jQuery || document.write('<script src="../../js/libs/jquery.min.js"><\/script>')</script>
+
+  <!-- scripts concatenated and minified via build script -->
+	<script src="../../js/libs/bootstrap.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		com = {};
+		com.cumulostratus = {};
+		com.cumulostratus.atoms = {};
+		com.cumulostratus.molecules = {};
+		
+		atoms 		= com.cumulostratus.atoms;
+		molecules 	= com.cumulostratus.molecules;
+	</script>
+	<script src="../../atoms/com.cumulostratus.atoms.doublylinkedlist.js"></script>
+	<script src="../../atoms/com.cumulostratus.atoms.timex.js"></script>
+	<script src="../../molecules/com.cumulostratus.molecules.slapjack.js"></script>
+	
+	<script type="text/javascript">
+	
+		var slapjack = new molecules.SlapJack();
+		
+		slapjack.addPlayer('techn1cs');
+		slapjack.addPlayer('computer1');
+		slapjack.addPlayer('computer2');
+		slapjack.addPlayer('computer3');
+
+		console.log('Setting up the players...');
+		for (var i = 0; i < slapjack._playerAliases.length; i++) {
+			console.log('   ' + slapjack._playerAliases[i]);
+		}
+		
+		console.log('Dealing cards...');
+		slapjack.deal();
+		
+		for (var i = 0; i < slapjack._playerAliases.length; i++) {
+			var list = '';
+			var playerDeck = slapjack.players[slapjack._playerAliases[i]].deck;
+			playerDeck.tail();
+			for (var j = 0; j < playerDeck.size(); j++) {
+				list += ' <span' + ((playerDeck.get().suit.toLowerCase() == "hearts" || playerDeck.get().suit.toLowerCase() == "diamonds") ? ' style="color:#cc0000;"' : '') + '>' + playerDeck.get().symbol + '</span> &nbsp;';
+				if (!playerDeck.atHead()) playerDeck.down();
+			}
+			
+			$('#player' + (i+1)).html('<br />[' + slapjack._playerAliases[i] + ']<br /> ' + list);
+			console.log(slapjack.players[slapjack._playerAliases[i]]);
+			list = '';
+		}
+		
+		console.log('Beginning the game...');
+		
+		slapjack.go();
+		
+		function lay(playerId) {
+			for (var i = 0; i < slapjack._playerAliases.length; i++)
+				$('#player' + i + '-lay').attr('disabled', 'disabled');
+		
+			displayCard(slapjack.lay(playerId));
+			
+			$('#player' + slapjack.currentPlayerId() + '-lay').removeAttr('disabled');
+		}
+		
+		function displayCard(card) {
+			if (!card) return;
+			
+			if (card.symbol == 'J') 
+				$('.card').addClass('hot');
+			else
+				$('.card').removeClass('hot');
+			
+			var color = ((card.suit.toLowerCase() == "hearts" || 
+										card.suit.toLowerCase() == "diamonds") ? 
+										'#cc0000' : '');
+										
+			$('.card .digit').html(card.digit).css('color', color);
+			$('.card .symbol').html(card.symbol).css('color', color);
+			$('.card .suit').html(card.suit).css('color', color);
+		}
+		
+		/*
+		slapjack._benchmark.tag('doc.ready > move to tail');
+		slapjack.deck.tail();
+		
+		var msDuration = slapjack._benchmark.stop();
+		console.log('Total duration of slapjack initialization: ' + (msDuration / 1000) + ' sec(s)');		
+		
+		var card = slapjack.deck.get();
+		$('.card .digit').html(card.digit);
+		$('.card .symbol').html(card.symbol);
+		$('.card .suit').html(card.suit);
+		
+		function nextCard() {
+			if (slapjack.deck.atHead()) {
+				console.log('At the bottom of the deck. No more cards.');
+				return;
+			}
+			
+			slapjack.deck.down();
+			var card = slapjack.deck.get();
+			
+			if (card.symbol.toUpperCase() == "J") $('.card').addClass('hot');
+			else $('.card').removeClass('hot');
+			
+			$('.card .symbol').html(card.symbol);
+			$('.card .digit').html(card.digit);
+			$('.card .suit').html(card.suit);
+		}
+		*/
+	</script>
+	
+  <!--
+  <script src="js/plugins.js"></script>
+  <script src="js/script.js"></script>
+  -->
+  <!-- end scripts -->
+
+  <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
+       mathiasbynens.be/notes/async-analytics-snippet -->
+	   
+<!--
+  <script>
+    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+ -->
+</body>
+</html>
